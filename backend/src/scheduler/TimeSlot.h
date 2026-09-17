@@ -11,7 +11,6 @@ public:
     string endTime;
     TimeSlot();
     TimeSlot(int id, string day, string startTime, string endTime);
-    void display();
 };
 
 #endif
