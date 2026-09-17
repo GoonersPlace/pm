@@ -1,0 +1,10 @@
+{
+  "softConstraintWeights": {
+    "studentGroupGaps": 5,
+    "lecturerGaps": 3,
+    "earlyLateSlots": 2,
+    "dailyLoadBalance": 2,
+    "sameCourseSpread": 1
+  },
+  "preferredMaxClassesPerDay": 4
+}

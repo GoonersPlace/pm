@@ -1,0 +1,823 @@
+BỘ CÂU HỎI KHỞI TẠO DỰ ÁN
+Dự án: Hệ thống Sắp xếp Lịch học Tối ưu sử dụng Graph Coloring
+
+Ghi chú:
+- Các câu trả lời dưới đây là định hướng đề xuất ban đầu.
+- Những câu hỏi mang tính quyết định kiến trúc sâu, công nghệ cụ thể, workflow cá nhân hoặc quyền tự chủ của AI được để trống để chủ dự án tự điền.
+- Có thể chỉnh sửa các câu trả lời này sau khi nhóm thống nhất scope chính thức.
+
+======================================================================
+1. MỤC TIÊU DỰ ÁN
+======================================================================
+
+- Tên dự án là gì?
+Trả lời:
+Smart Timetable Scheduler / Hệ thống Sắp xếp Lịch học Tối ưu bằng Graph Coloring.
+
+- Dự án giải quyết vấn đề gì?
+Trả lời:
+Dự án giải quyết bài toán tự động sắp xếp lịch học sao cho hạn chế hoặc loại bỏ các xung đột giữa môn học, giảng viên, phòng học và nhóm sinh viên. Hệ thống sử dụng mô hình đồ thị xung đột (Conflict Graph), trong đó mỗi lớp học hoặc học phần là một đỉnh, cạnh thể hiện hai lớp không thể diễn ra cùng thời điểm, và Graph Coloring được dùng để gán khung giờ phù hợp. Sau khi tạo được lịch hợp lệ, hệ thống có thể đánh giá và lựa chọn lịch tốt hơn dựa trên các tiêu chí tối ưu.
+
+- Người dùng chính là ai?
+Trả lời:
+Người dùng chính trong MVP là người phụ trách xếp thời khóa biểu, chẳng hạn quản trị viên đào tạo hoặc thành viên nhóm đóng vai trò scheduler/admin. Sinh viên và giảng viên có thể là nhóm người dùng xem lịch ở các phiên bản sau.
+
+- MVP cần những chức năng chính nào?
+Trả lời:
+1. Quản lý dữ liệu đầu vào cơ bản: môn/lớp học, giảng viên, phòng học, nhóm sinh viên và khung giờ.
+2. Khai báo hoặc tự xác định các xung đột giữa các lớp học.
+3. Xây dựng Conflict Graph từ dữ liệu đầu vào.
+4. Sử dụng Graph Coloring để gán time slot cho các lớp.
+5. Kiểm tra các hard constraint cơ bản:
+   - Giảng viên không dạy hai lớp cùng lúc.
+   - Một phòng không được dùng cho hai lớp cùng lúc.
+   - Các nhóm sinh viên có môn chung không bị trùng lịch.
+   - Phòng học phải phù hợp với lớp học.
+6. Sinh thời khóa biểu hợp lệ.
+7. Hiển thị thời khóa biểu theo dạng bảng/lịch.
+8. Hiển thị Conflict Graph để minh họa cách thuật toán hoạt động.
+9. Tính một điểm đánh giá cơ bản cho lịch dựa trên một số soft constraint đã chọn.
+
+- Có chức năng nào chắc chắn không làm trong MVP không?
+Trả lời:
+Đề xuất không làm trong MVP:
+- AI/LLM/RAG/agent.
+- Realtime collaboration.
+- Tích hợp trực tiếp với hệ thống đào tạo thật của trường.
+- Mobile app native.
+- Tự động gửi email/thông báo.
+- Tối ưu với dữ liệu quy mô rất lớn.
+- Các thuật toán tối ưu phức tạp như Genetic Algorithm, Simulated Annealing hoặc Machine Learning nếu Graph Coloring và heuristic cơ bản đã đáp ứng yêu cầu môn học.
+
+
+======================================================================
+2. LOẠI SẢN PHẨM
+======================================================================
+
+- Web app, mobile app, desktop, backend API, AI system hay loại khác?
+Trả lời:
+Đề xuất là Web App.
+
+- Có frontend và backend riêng không?
+Trả lời:
+Có. Frontend dùng để quản lý dữ liệu, hiển thị timetable và trực quan hóa graph; backend xử lý dữ liệu, constraint và thuật toán xếp lịch.
+
+- Có admin portal không?
+Trả lời:
+Trong MVP, giao diện chính có thể xem như admin/scheduler portal vì người sử dụng chính là người nhập dữ liệu và tạo lịch. Chưa cần tách thành một admin portal riêng biệt.
+
+- Có realtime/WebSocket không?
+Trả lời:
+Không cần trong MVP.
+
+- Có AI/RAG/LLM/agent không?
+Trả lời:
+Không cần trong MVP. Thuật toán trọng tâm nên là Graph Coloring và các heuristic/optimization liên quan đến Toán rời rạc và Lý thuyết đồ thị.
+
+
+======================================================================
+3. TECH STACK
+======================================================================
+
+- Frontend dùng gì? Ví dụ Next.js/React/Vue...
+Trả lời: Next.js
+
+
+- Backend dùng gì? FastAPI/NestJS/Spring/.NET...
+Trả lời: Fast API, Python
+
+
+- Database?
+Trả lời:
+Nên sử dụng cơ sở dữ liệu quan hệ vì dữ liệu gồm nhiều quan hệ rõ ràng giữa lớp học, giảng viên, phòng, sinh viên và time slot. Sử dụng PostgreSQL
+
+- Cache/queue?
+Trả lời:
+Không cần trong MVP trừ khi có yêu cầu hiệu năng cụ thể.
+
+- Object storage?
+Trả lời:
+Không cần trong MVP nếu hệ thống không lưu file lớn. Nếu có thì dùng Minio
+
+- Deployment dự kiến ở đâu?
+Trả lời: ngrok
+
+
+- Package manager nào? npm, pnpm, yarn, uv, poetry...?
+Trả lời: npm
+
+
+
+======================================================================
+4. KIẾN TRÚC
+======================================================================
+
+- Bạn muốn monorepo hay nhiều repo?
+Trả lời: monorepo
+
+
+- Có kiến trúc đã định trước không? Ví dụ Clean Architecture, Layered, Modular Monolith...
+Trả lời:
+Đề xuất ưu tiên kiến trúc đơn giản, dễ hiểu và dễ chia module. Một Modular Monolith hoặc Layered Architecture là đủ phù hợp cho MVP. Không nên áp dụng microservices.
+
+- Bạn muốn AI bắt buộc tuân thủ architecture, hay được phép đề xuất thay đổi?
+Trả lời: Bắt buộc tuân thủ architecture
+
+
+- AI có được tự tạo library/framework/dependency mới không, hay phải hỏi trước?
+Trả lời: phải hỏi trước
+
+
+- Có nguyên tắc kiểu “không over-engineer”, “ưu tiên đơn giản” không?
+Trả lời:
+Có. Đề xuất:
+- Không over-engineer.
+- Ưu tiên giải pháp đơn giản, dễ đọc, dễ test và phù hợp scope môn học.
+- Chỉ thêm abstraction khi thực sự cần.
+- Graph Coloring và scheduling logic phải dễ quan sát và giải thích khi demo.
+
+
+======================================================================
+5. CẤU TRÚC REPOSITORY
+======================================================================
+
+- Bạn muốn dạng nào, ví dụ: frontend/, backend/, docs/, tests/, infrastructure/?
+Trả lời:
+Đề xuất cấu trúc tổng quát:
+frontend/
+backend/
+docs/
+tests/
+scripts/
+README.md
+
+Nếu deployment đơn giản thì chưa cần infrastructure/ trong giai đoạn đầu.
+
+- Có muốn có docs/ chứa PRD, ARCH, API, DB schema... giống Chatbot AI Makerspace không?
+Trả lời:
+Có. Đây là lựa chọn tốt vì dự án có cả phần thuật toán, constraint và kiến trúc hệ thống. Đề xuất docs/ gồm:
+- PRD.md
+- ARCHITECTURE.md
+- GRAPH_MODEL.md
+- SCHEDULING_RULES.md
+- API.md
+- DATABASE.md
+- TESTING.md
+- DECISIONS.md
+
+- Có muốn .claude/memory/ để AI nhớ project state?
+Trả lời: Có
+
+
+- Có muốn AGENTS.md riêng cho từng module như frontend/backend không?
+Trả lời: Có
+
+
+
+======================================================================
+6. QUY TẮC CODING
+======================================================================
+
+- Ngôn ngữ code chính?
+Trả lời: C++
+
+
+- Naming convention?
+Trả lời: camelCase
+
+
+- Có giới hạn kích thước file/function không?
+Trả lời: Không
+
+
+- Có yêu cầu type safety nghiêm ngặt không?
+Trả lời:
+Đề xuất có type safety ở mức hợp lý và tránh kiểu dữ liệu mơ hồ trong các module quan trọng như scheduling, graph, constraint và API contract.
+
+- Có cấm any, magic number, hard-code config... không?
+Trả lời:
+Đề xuất:
+- Tránh any nếu ngôn ngữ hỗ trợ type system.
+- Không dùng magic number cho weight, penalty, time slot hoặc constraint.
+- Các weight/penalty/config nên được đặt tên rõ ràng và tập trung tại config hoặc constants.
+
+- Comment/docstring theo phong cách nào?
+Trả lời:
+Comment nên giải thích “vì sao” thay vì lặp lại “code đang làm gì”. Những thuật toán như Graph Coloring, DSATUR, cost function hoặc constraint evaluation nên có docstring giải thích input, output và logic chính.
+
+- Có yêu cầu code phải đơn giản, dễ đọc hơn tối ưu sớm không?
+Trả lời:
+Có. Ưu tiên code rõ ràng, dễ giải thích và maintainable hơn premature optimization.
+
+
+======================================================================
+7. FRONTEND RULES
+======================================================================
+
+- UI framework/component library nào?
+Trả lời: shadcn/ui
+
+
+- Tailwind hay CSS khác?
+Trả lời: Tailwind
+
+
+- Có Figma/design system chưa?
+Trả lời: Chưa
+
+
+- AI có được tự quyết định UI hay phải bám design?
+Trả lời: bám design
+
+
+- Responsive tới mobile/tablet/desktop?
+Trả lời:
+Đề xuất ít nhất hỗ trợ desktop tốt vì đây là giao diện quản lý timetable. Tablet/mobile có thể responsive ở mức cơ bản.
+
+- Có quy tắc accessibility không?
+Trả lời:
+Đề xuất tuân theo các nguyên tắc cơ bản: semantic HTML, label cho form, điều hướng bằng bàn phím ở các thành phần chính, contrast đủ rõ và không phụ thuộc hoàn toàn vào màu sắc để biểu thị trạng thái/xung đột.
+
+
+======================================================================
+8. BACKEND/API RULES
+======================================================================
+
+- REST, GraphQL hay RPC?
+Trả lời:
+Đề xuất REST cho MVP vì đơn giản, dễ triển khai và đủ cho nghiệp vụ.
+
+- API versioning?
+Trả lời:
+Không bắt buộc nếu MVP nhỏ. Có thể dùng /api/v1 nếu nhóm muốn chuẩn hóa ngay từ đầu.
+
+- Response format có chuẩn chung không?
+Trả lời:
+Đề xuất có format nhất quán cho success/error response, đặc biệt đối với validation error và scheduling error.
+
+- Validation library?
+Trả lời: Chưa xác định
+
+
+- Authentication?
+Trả lời:
+Có thể dùng authentication đơn giản nếu MVP có nhiều người dùng. Nếu demo nội bộ và chỉ có một vai trò scheduler/admin thì có thể chưa cần authentication phức tạp.
+
+- Authorization/RBAC?
+Trả lời:
+Không cần RBAC phức tạp trong MVP nếu chỉ có một loại người dùng quản trị lịch.
+
+- AI có được thay đổi API contract khi implementation thấy bất tiện không?
+Trả lời: Không
+
+
+
+======================================================================
+9. DATABASE
+======================================================================
+
+- ORM nào?
+Trả lời: 
+Không bắt buộc sử dụng ORM trong MVP. Đề xuất sử dụng Qt SQL để làm việc trực tiếp với SQLite thông qua các class như QSqlDatabase và QSqlQuery. Cách này đơn giản, phù hợp với quy mô dự án và tránh thêm abstraction không cần thiết.
+
+
+- Migration tool nào?
+Trả lời: 
+Không cần migration framework riêng trong MVP. Đề xuất quản lý migration bằng các file SQL có version, ví dụ:
+
+001_initial_schema.sql
+002_add_room_capacity.sql
+003_add_constraint_priority.sql
+
+Ứng dụng có thể lưu schema_version trong database để biết migration nào đã được áp dụng.
+
+
+- AI có được tự thay schema không?
+Trả lời: 
+Không. AI có thể đề xuất thay đổi database schema nhưng không được tự ý thay đổi bảng, column, kiểu dữ liệu, foreign key, unique constraint hoặc relationship. Mọi thay đổi schema phải được chủ dự án duyệt trước. Sau khi được duyệt, AI phải tạo migration SQL tương ứng và cập nhật tài liệu database schema.
+
+
+- Mọi thay đổi schema có bắt buộc migration?
+Trả lời:
+Có. Sau khi schema ban đầu đã được thiết lập, mọi thay đổi schema phải được thực hiện thông qua file migration SQL. Không chỉnh sửa trực tiếp database đang sử dụng mà không có migration tương ứng.
+
+- Có quy tắc index, foreign key, soft delete, timestamp không?
+Trả lời:
+Đề xuất:
+Sử dụng foreign key cho các quan hệ chính giữa Course, Lecturer, Room, StudentGroup, TimeSlot và các bảng liên quan.
+Bật foreign key enforcement của SQLite.
+Chỉ tạo index cho các column thường dùng để tìm kiếm, join hoặc kiểm tra conflict.
+Có thể sử dụng created_at và updated_at cho các entity quan trọng.
+Không cần soft delete trong MVP, trừ khi có yêu cầu khôi phục dữ liệu hoặc audit.
+Không lưu dữ liệu có thể suy ra lại một cách không cần thiết.
+
+- Database schema có được xem là source of truth không?
+Trả lời:
+Có. Các file migration SQL và schema hiện tại của SQLite được xem là source of truth cho cấu trúc database. File docs/DATABASE.md phải phản ánh đúng schema nhưng không được thay thế migration.
+
+
+======================================================================
+10. TESTING
+======================================================================
+
+- Bạn muốn bắt buộc unit test không?
+Trả lời:
+Đề xuất có, đặc biệt với:
+- Conflict graph construction.
+- Graph coloring.
+- Constraint checking.
+- Cost/score calculation.
+- Scheduling result validation.
+
+- Integration test?
+Trả lời:
+Đề xuất có ở mức cơ bản cho API + database + scheduling service.
+
+- E2E?
+Trả lời:
+Có thể có một số E2E test cho luồng quan trọng nhất, nhưng không bắt buộc quá nhiều trong MVP.
+
+- Minimum coverage?
+Trả lời: 
+Đề xuất minimum coverage tổng thể khoảng 70% cho phần business logic và scheduling engine.
+
+Ưu tiên coverage cao hơn cho các module quan trọng:
+
+Conflict Graph construction: 80%+
+Graph Coloring / Scheduling Algorithm: 80%+
+Constraint Checking: 80%+
+Timetable Scoring / Evaluation: 75%+
+
+Các phần UI bằng Qt không bắt buộc đạt coverage cao trong MVP, vì trọng tâm của dự án là thuật toán và logic xếp lịch.
+
+Không nên chạy theo coverage 100%. Coverage chỉ là chỉ số hỗ trợ; các test phải tập trung vào những trường hợp có ý nghĩa như conflict, lịch không hợp lệ, graph đặc biệt, input rỗng và các edge case của thuật toán.
+
+
+- Khi AI sửa bug, có bắt buộc tạo regression test không?
+Trả lời:
+Đề xuất có đối với bug thuộc scheduling logic, constraint hoặc API business logic.
+
+- AI phải chạy những command nào trước khi báo task hoàn thành?
+Trả lời: 
+Đề xuất AI phải chạy các command phù hợp với phạm vi thay đổi trước khi báo task hoàn thành.
+
+Tối thiểu đối với task có thay đổi source code:
+
+Configure project:
+cmake -S . -B build
+Build project:
+cmake --build build
+Run automated tests:
+ctest --test-dir build --output-on-failure
+Nếu project sử dụng clang-format, kiểm tra hoặc format các file C++ đã thay đổi:
+clang-format
+Nếu project sử dụng clang-tidy, chạy static analysis trên các file/module bị ảnh hưởng:
+clang-tidy
+
+Một task chỉ được xem là hoàn thành khi:
+
+Project build thành công.
+Các test liên quan đều pass.
+Không có lỗi lint/static analysis nghiêm trọng.
+Không tạo warning mới đáng chú ý.
+Nếu thay đổi database schema, migration tương ứng phải được kiểm tra.
+Nếu task chỉ thay đổi documentation thì không bắt buộc chạy toàn bộ build/test, nhưng phải đảm bảo nội dung tài liệu nhất quán với code hiện tại.
+
+AI không được báo task hoàn thành nếu các bước kiểm tra bắt buộc thất bại. Nếu có bước không thể chạy do môi trường thiếu dependency hoặc tool, AI phải ghi rõ bước nào chưa chạy và lý do.
+
+
+
+======================================================================
+11. LINT / FORMAT / QUALITY GATE
+======================================================================
+
+- Formatter?
+Trả lời:
+
+
+- Linter?
+Trả lời:
+
+
+- Type checker?
+Trả lời:
+
+
+- Có pre-commit hook không?
+Trả lời:
+
+
+- Một task chỉ được xem là hoàn thành khi lint + test + build đều pass?
+Trả lời:
+Đề xuất có đối với các task code thông thường, trừ khi task chỉ thay đổi tài liệu.
+
+
+======================================================================
+12. GIT WORKFLOW
+======================================================================
+
+- Branch strategy: main, develop, feature branch...?
+Trả lời:
+
+
+- Naming branch?
+Trả lời:
+
+
+- Commit convention? Ví dụ Conventional Commits.
+Trả lời:
+
+
+- AI có được commit tự động không?
+Trả lời:
+
+
+- AI có được push không?
+Trả lời:
+
+
+- AI có được merge không?
+Trả lời:
+
+
+- Có muốn AI tạo PR description không?
+Trả lời:
+
+
+
+======================================================================
+13. CÁCH AI XỬ LÝ TASK
+======================================================================
+
+- Khi nhận task, AI nên: đọc docs → phân tích code → lập plan → code → test → báo cáo?
+Trả lời:
+Đề xuất workflow:
+1. Đọc requirement và tài liệu liên quan.
+2. Kiểm tra code hiện tại trước khi sửa.
+3. Xác định module bị ảnh hưởng.
+4. Với task đủ lớn, lập plan ngắn.
+5. Implement trong phạm vi task.
+6. Chạy test/lint/type-check/build phù hợp.
+7. Cập nhật docs nếu contract hoặc behavior thay đổi.
+8. Báo cáo file đã sửa, quyết định chính, test đã chạy và vấn đề còn lại.
+
+- Có muốn AI không code ngay, mà phải đọc context trước?
+Trả lời:
+Đề xuất có. Đặc biệt phải đọc các tài liệu về graph model, scheduling rules, architecture và API trước khi sửa các phần liên quan.
+
+- Với task lớn, AI có phải chia nhỏ task không?
+Trả lời:
+Đề xuất có.
+
+- Khi requirement mơ hồ, AI nên hỏi hay tự chọn phương án an toàn?
+Trả lời:
+
+
+- Khi phát hiện requirement và code hiện tại mâu thuẫn, nguồn nào ưu tiên?
+Trả lời:
+Đề xuất ưu tiên tài liệu source of truth đã được quy định. Nếu chưa có quy tắc source of truth rõ ràng thì không nên tự suy đoán đối với thay đổi ảnh hưởng behavior lớn.
+
+
+======================================================================
+14. QUYỀN TỰ CHỦ CỦA AI
+======================================================================
+
+- AI được tự tạo file?
+Trả lời:
+Có, nếu file mới nằm trong phạm vi task hiện tại và phù hợp với cấu trúc repository/architecture đã thống nhất. Ví dụ: source file, header file, test file, migration đã được phê duyệt, hoặc tài liệu liên quan trực tiếp đến task.
+
+
+- AI được tự xóa file?
+Trả lời:
+Không được tự ý xóa file quan trọng. AI chỉ được xóa file tạm, file generated hoặc file rõ ràng không còn được sử dụng khi việc xóa là một phần trực tiếp của task. Nếu file thuộc source code, database, config, docs chính hoặc có khả năng ảnh hưởng module khác thì phải hỏi trước.
+
+
+- AI được tự rename/move file?
+Trả lời:
+Được phép đối với thay đổi nhỏ trong cùng module nếu không làm thay đổi public interface hoặc cấu trúc architecture. Việc rename/move module lớn, thư mục chính hoặc file được nhiều nơi tham chiếu phải được phê duyệt trước.
+
+
+- AI được tự thêm dependency?
+Trả lời:
+Không. AI có thể đề xuất dependency mới và giải thích lý do, nhưng phải được chủ dự án phê duyệt trước khi thêm. AI nên ưu tiên sử dụng C++ Standard Library, Qt và các dependency đã có sẵn trước khi đề xuất thư viện mới.
+
+
+- AI được tự sửa database?
+Trả lời:
+AI được phép sửa code truy cập database hoặc query trong phạm vi task. Tuy nhiên, AI không được tự ý thay đổi database schema. Mọi thay đổi bảng, column, foreign key, constraint hoặc relationship phải được phê duyệt trước và phải có migration SQL tương ứng.
+
+
+- AI được tự sửa API?
+Trả lời:
+AI được phép sửa implementation bên trong API nếu không thay đổi contract đã thống nhất. AI không được tự ý thay đổi endpoint, request/response format, tên field, kiểu dữ liệu hoặc behavior public của API nếu chưa được phê duyệt.
+
+
+- AI được tự thay architecture?
+Trả lời:
+Không. AI có thể đề xuất thay đổi architecture khi phát hiện vấn đề hoặc có giải pháp tốt hơn, nhưng không được tự triển khai thay đổi kiến trúc chính nếu chưa được phê duyệt.
+
+
+- Những hành động nào bắt buộc phải hỏi bạn trước?
+Trả lời:
+AI bắt buộc phải hỏi trước khi:
+Thay đổi architecture hoặc cấu trúc module lớn.
+Thêm, xóa hoặc thay dependency/framework.
+Thay đổi database schema.
+Thay đổi API contract.
+Xóa hoặc di chuyển source file/module quan trọng.
+Thay đổi thuật toán Graph Coloring hoặc scheduling strategy cốt lõi theo cách làm thay đổi behavior đã thống nhất.
+Thay đổi hard constraint hoặc soft constraint của hệ thống.
+Thay đổi requirement hoặc scope MVP.
+Thực hiện refactor lớn ngoài phạm vi task.
+Thay đổi build system, compiler configuration hoặc project-wide configuration.
+Thực hiện hành động có nguy cơ làm mất dữ liệu.
+
+Nguyên tắc chung:
+AI được tự chủ trong các quyết định implementation nhỏ và có thể dễ dàng hoàn tác. Những thay đổi ảnh hưởng đến architecture, dependency, database, API, thuật toán lõi hoặc requirement phải được con người phê duyệt trước.
+
+
+======================================================================
+15. SKILL BẠN MUỐN
+======================================================================
+
+Ngoài skill kiểu log-task, bạn muốn AI có các workflow nào?
+
+Các skill gợi ý:
+implement-task
+fix-bug
+review-code
+create-api
+db-migration
+write-tests
+frontend-page
+refactor
+update-docs
+log-task
+prepare-pr
+project-status
+
+Trả lời:
+Đề xuất hữu ích cho dự án:
+- implement-task
+- fix-bug
+- review-code
+- create-api
+- db-migration
+- write-tests
+- frontend-page
+- refactor
+- update-docs
+- log-task
+- prepare-pr
+- project-status
+
+Có thể bổ sung skill riêng:
+- scheduling-feature: triển khai/chỉnh sửa logic scheduling.
+- graph-algorithm: thay đổi hoặc thử nghiệm thuật toán Graph Coloring.
+- constraint-rule: thêm hoặc chỉnh sửa hard/soft constraint.
+- benchmark-scheduler: benchmark chất lượng lịch và thời gian chạy.
+
+
+======================================================================
+16. LOG-TASK
+======================================================================
+
+- Bạn có muốn giữ đúng ý tưởng skill cũ: sau mỗi task ghi lại những gì đã làm?
+Trả lời:
+Đề xuất có.
+
+- Log lưu ở đâu? Ví dụ docs/process/.
+Trả lời:
+Đề xuất docs/process/ hoặc docs/task-logs/.
+
+- Log cần chứa gì: requirement, files changed, decisions, commands run, tests, known issues?
+Trả lời:
+Đề xuất gồm:
+- Task/requirement.
+- Scope.
+- Files changed.
+- Decisions made.
+- Commands run.
+- Tests/checks đã chạy.
+- Kết quả.
+- Known issues.
+- Follow-up/TODO nếu có.
+
+- Có muốn log tự động cập nhật project memory không?
+Trả lời:
+Có
+
+
+======================================================================
+17. PROJECT MEMORY
+======================================================================
+
+- Bạn muốn AI nhớ những gì giữa các task?
+Trả lời:
+Đề xuất nhớ:
+- Architecture decisions.
+- Graph model.
+- Hard constraints.
+- Soft constraints.
+- Scheduling algorithm hiện tại.
+- Current implementation state.
+- Known issues.
+- Coding agreements.
+- Environment/setup notes cần thiết.
+- Các quyết định đã được nhóm chính thức chấp nhận.
+
+- Memory có được AI tự cập nhật sau task không?
+Trả lời: Có
+
+
+
+======================================================================
+18. DOCUMENTATION / SOURCE OF TRUTH
+======================================================================
+
+- Có PRD chưa?
+Trả lời:
+Chưa xác định. Nên tạo PRD trước hoặc ngay khi bắt đầu implementation.
+
+- Architecture document?
+Trả lời:
+Chưa xác định. Nên có ARCHITECTURE.md.
+
+- API spec?
+Trả lời:
+Chưa xác định. Nên tạo khi backend API được thiết kế.
+
+- DB schema?
+Trả lời:
+Chưa xác định. Nên tài liệu hóa khi data model ổn định.
+
+- UI/Figma spec?
+Trả lời: 
+Hiện tại chưa có và có thể không cần vì frontend tôi có thể tự làm
+
+- Environment config?
+Trả lời:
+Đề xuất có .env.example và tài liệu setup môi trường.
+
+- File nào có quyền ưu tiên cao nhất nếu tài liệu mâu thuẫn nhau?
+Trả lời:
+SRS và PRD
+
+
+======================================================================
+19. SECURITY
+======================================================================
+
+- Secrets phải xử lý thế nào?
+Trả lời:
+Không commit secrets vào Git. Secret phải được truyền qua environment variables hoặc secret manager của môi trường deploy.
+
+- Có .env.example không?
+Trả lời:
+Đề xuất có.
+
+- AI có bị cấm đọc/sửa .env thật không?
+Trả lời:
+Đề xuất không để AI ghi secret mới vào .env thật hoặc đưa nội dung secret vào log/docs. Quyền đọc/sửa .env thật nên do chủ dự án quyết định.
+
+- Có dữ liệu nhạy cảm/PII không?
+Trả lời:
+MVP nên dùng dữ liệu giả lập hoặc dữ liệu đã loại bỏ thông tin nhạy cảm. Nếu có dữ liệu sinh viên/giảng viên thật thì phải hạn chế thu thập và tránh lưu thông tin không cần thiết cho bài toán scheduling.
+
+- Có rule về authentication/authorization/security review không?
+Trả lời:
+Đề xuất mức cơ bản:
+- Validate input.
+- Không để lộ stack trace hoặc thông tin nhạy cảm qua API.
+- Kiểm soát quyền đối với chức năng chỉnh sửa lịch nếu hệ thống có đăng nhập.
+- Không hard-code secret.
+- Dependency cần có nguồn rõ ràng.
+
+
+======================================================================
+20. DEFINITION OF DONE
+======================================================================
+
+Một task được coi là hoàn thành khi những điều nào đúng?
+
+Trả lời:
+Đề xuất:
+- Implementation đúng requirement đã thống nhất.
+- Không sửa ngoài scope nếu không cần thiết.
+- Test liên quan pass.
+- Lint/type-check/build liên quan pass.
+- Không tạo regression đã biết.
+- API/docs/schema được cập nhật nếu behavior hoặc contract thay đổi.
+- Task log được cập nhật nếu project áp dụng log-task.
+- TODO còn lại phải được ghi nhận rõ, không để TODO quan trọng không có giải thích.
+
+
+======================================================================
+21. PHONG CÁCH LÀM VIỆC CỦA AI
+======================================================================
+
+- Bạn thích AI code nhanh và ít giải thích, hay giải thích quyết định kỹ?
+Trả lời: giải thích quyết định kỹ
+
+
+- Khi có 2 cách hợp lý, AI tự chọn hay trình bày để bạn chọn?
+Trả lời: Trình bày để tôi chọn
+
+
+- Bạn ưu tiên: tốc độ, maintainability, performance hay simplicity?
+Trả lời:
+Đề xuất ưu tiên mặc định cho project này:
+1. Simplicity.
+2. Maintainability.
+3. Correctness.
+4. Performance ở mức đáp ứng quy mô MVP.
+Không tối ưu sớm nếu chưa có bottleneck thực tế.
+
+- Có muốn AI tuyệt đối tránh sửa code ngoài phạm vi task không?
+Trả lời:
+Đề xuất có. Nếu phát hiện vấn đề ngoài scope, AI nên báo lại thay vì tự refactor diện rộng.
+
+
+======================================================================
+22. CODING AGENT BẠN DỰ ĐỊNH DÙNG
+======================================================================
+
+- Claude Code?
+Trả lời: có
+
+
+- Codex?
+Trả lời: có
+
+
+- Cursor?
+Trả lời: không dùng
+
+
+- GitHub Copilot?
+Trả lời: có
+
+
+- Gemini CLI?
+Trả lời: không dùng
+
+
+- Hay muốn repo hỗ trợ nhiều coding agent cùng lúc?
+Trả lời: có 
+
+
+
+======================================================================
+23. DỰ ÁN ĐÃ CÓ GÌ RỒI?
+======================================================================
+
+- Đây là project hoàn toàn mới hay đã có source code?
+Trả lời: Mới hoàn toàn
+
+
+- Nếu đã có source code, bạn có thể đưa repo/ZIP cho mình phân tích.
+Trả lời: Không có
+
+
+- Nếu hoàn toàn mới, mình sẽ thiết kế bộ AI instruction ngay từ đầu.
+Trả lời: Nó là mới hoàn toàn
+
+
+
+======================================================================
+24. MỨC ĐỘ KIỂM SOÁT AI
+======================================================================
+
+Chọn một trong ba:
+
+Trả lời:
+B — Balanced:
+AI tự quyết các chi tiết implementation nhỏ, thay đổi lớn phải hỏi.
+
+
+
+======================================================================
+TÓM TẮT ĐỊNH HƯỚNG HIỆN TẠI
+======================================================================
+
+Project core:
+- Conflict Graph.
+- Graph Coloring.
+- Hard Constraints.
+- Soft Constraints.
+- Timetable Generation.
+- Timetable Evaluation.
+- Graph Visualization.
+
+MVP ưu tiên:
+- Đúng kiến thức Toán rời rạc và Lý thuyết đồ thị.
+- Thuật toán dễ quan sát, giải thích và demo.
+- Web App đơn giản.
+- Không AI/LLM.
+- Không realtime.
+- Không microservices.
+- Không over-engineer.
+- Có unit test cho scheduling/graph/constraint.
+- Có tài liệu riêng cho graph model và scheduling rules.
+
+
