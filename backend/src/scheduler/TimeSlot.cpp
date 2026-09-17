@@ -15,9 +15,3 @@ TimeSlot::TimeSlot(int id, string day, string startTime, string endTime) {
     this->endTime = endTime;
 }
 
-void TimeSlot::display() {
-    cout << id << " | "
-         << day << " | "
-         << startTime << " - "
-         << endTime << endl;
-}
