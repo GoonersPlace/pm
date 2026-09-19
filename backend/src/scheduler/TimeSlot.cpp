@@ -1,48 +1,42 @@
+#include <stdio.h>
 #include "TimeSlot.h"
-#include <iostream>
 
-using namespace std;
+#define INPUT_FILE "C:/data/timeslot.txt"
 
-TimeSlot::TimeSlot()
+void InputTimeSlots(TimeSlot slots[], int &n)
 {
-    day = "";
-    slotNumber = 0;
-    startTime = "";
-    endTime = "";
+    FILE *file = fopen(INPUT_FILE, "r");
+
+    if (file == NULL)
+    {
+        printf("Khong mo duoc file: %s\n", INPUT_FILE);
+        n = 0;
+        return;
+    }
+
+    n = 0;
+
+    while (n < MAX_TIMESLOT &&
+           fscanf(file, "%[^,],%d,%[^,],%s\n",
+                  slots[n].day,
+                  &slots[n].slotNumber,
+                  slots[n].startTime,
+                  slots[n].endTime) == 4)
+    {
+        n++;
+    }
+
+    fclose(file);
 }
 
-TimeSlot::TimeSlot(string day, int slotNumber,
-                   string startTime, string endTime)
+void OutputTimeSlots(TimeSlot slots[], int n)
 {
-    this->day = day;
-    this->slotNumber = slotNumber;
-    this->startTime = startTime;
-    this->endTime = endTime;
-}
-
-void TimeSlot::Display()
-{
-    cout << day << " - Slot " << slotNumber
-         << " - " << startTime
-         << " -> " << endTime << endl;
-}
-
-string TimeSlot::getDay()
-{
-    return day;
-}
-
-int TimeSlot::getSlotNumber()
-{
-    return slotNumber;
-}
-
-string TimeSlot::getStartTime()
-{
-    return startTime;
-}
-
-string TimeSlot::getEndTime()
-{
-    return endTime;
+    for (int i = 0; i < n; i++)
+    {
+        printf("%s - Slot %d - %s -> %s\n",
+               slots[i].day,
+               slots[i].slotNumber,
+               slots[i].startTime,
+               slots[i].endTime);
+    }
 }
