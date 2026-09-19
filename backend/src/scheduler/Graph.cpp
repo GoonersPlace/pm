@@ -27,3 +27,15 @@ void OutputGraph(Graph G)
         printf("\n");
     }
 }
+void BuildGraph(Graph &G, int n)
+{
+    InitGraph(G, n);
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            AddEdge(G, i, j);
+        }
+    }
+}
