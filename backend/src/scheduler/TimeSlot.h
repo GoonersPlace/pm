@@ -7,10 +7,10 @@ using namespace std;
 class TimeSlot
 {
 private:
-    string day;        // Thứ trong tuần
-    int slotNumber;    // Số thứ tự tiết
-    string startTime;  // Giờ bắt đầu
-    string endTime;    // Giờ kết thúc
+    string day;
+    int slotNumber;
+    string startTime;
+    string endTime;
 
 public:
     TimeSlot();
@@ -18,10 +18,13 @@ public:
     TimeSlot(string day, int slotNumber,
              string startTime, string endTime);
 
+    void Display();
+
     string getDay();
     int getSlotNumber();
     string getStartTime();
     string getEndTime();
 };
+int InputTimeSlots(TimeSlot slots[], int maxSlots);
 
 #endif
