@@ -13,3 +13,17 @@ void InitGraph(Graph &G, int n)
         }
     }
 }
+void OutputGraph(Graph G)
+{
+    printf("Adjacency Matrix:\n\n");
+
+    for (int i = 0; i < G.n; i++)
+    {
+        for (int j = 0; j < G.n; j++)
+        {
+            printf("%d ", G.A[i][j]);
+        }
+
+        printf("\n");
+    }
+}
