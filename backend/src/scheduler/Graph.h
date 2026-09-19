@@ -15,4 +15,5 @@ void AddEdge(Graph &G, int u, int v);
 
 void OutputGraph(Graph G);
 
+void BuildGraph(Graph &G, int n);
 #endif
