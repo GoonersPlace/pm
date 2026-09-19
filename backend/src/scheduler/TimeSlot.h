@@ -1,30 +1,17 @@
 #ifndef TIMESLOT_H
 #define TIMESLOT_H
 
-#include <string>
-using namespace std;
+#define MAX_TIMESLOT 100
 
-class TimeSlot
+struct TimeSlot
 {
-private:
-    string day;
+    char day[10];
     int slotNumber;
-    string startTime;
-    string endTime;
-
-public:
-    TimeSlot();
-
-    TimeSlot(string day, int slotNumber,
-             string startTime, string endTime);
-
-    void Display();
-
-    string getDay();
-    int getSlotNumber();
-    string getStartTime();
-    string getEndTime();
+    char startTime[10];
+    char endTime[10];
 };
-int InputTimeSlots(TimeSlot slots[], int maxSlots);
+
+void InputTimeSlots(TimeSlot slots[], int &n);
+void OutputTimeSlots(TimeSlot slots[], int n);
 
 #endif
