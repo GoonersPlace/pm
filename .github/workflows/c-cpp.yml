@@ -19,21 +19,10 @@ jobs:
       - name: Install Qt 6 build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install --yes cmake g++ ninja-build qt6-base-dev qt6-httpserver-dev
+          sudo apt-get install --yes cmake g++ ninja-build qt6-base-dev qt6-httpserver-dev qt6-websockets-dev
 
       - name: Configure
-        shell: bash
-        run: |
-          set -o pipefail
-          cmake -S . -B build -G Ninja -DENABLE_WARNINGS_AS_ERRORS=ON 2>&1 | tee /tmp/cmake-configure.log
-
-      - name: Report configuration failure
-        if: failure()
-        shell: bash
-        run: |
-          while IFS= read -r line; do
-            echo "::error file=CMakeLists.txt::$line"
-          done < <(tail -n 10 /tmp/cmake-configure.log)
+        run: cmake -S . -B build -G Ninja -DENABLE_WARNINGS_AS_ERRORS=ON
 
       - name: Build
         run: cmake --build build --parallel
