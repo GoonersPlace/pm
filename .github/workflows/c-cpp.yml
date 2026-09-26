@@ -22,7 +22,18 @@ jobs:
           sudo apt-get install --yes cmake g++ ninja-build qt6-base-dev qt6-httpserver-dev
 
       - name: Configure
-        run: cmake -S . -B build -G Ninja -DENABLE_WARNINGS_AS_ERRORS=ON
+        shell: bash
+        run: |
+          set -o pipefail
+          cmake -S . -B build -G Ninja -DENABLE_WARNINGS_AS_ERRORS=ON 2>&1 | tee /tmp/cmake-configure.log
+
+      - name: Report configuration failure
+        if: failure()
+        shell: bash
+        run: |
+          while IFS= read -r line; do
+            echo "::error file=CMakeLists.txt::$line"
+          done < /tmp/cmake-configure.log
 
       - name: Build
         run: cmake --build build --parallel
