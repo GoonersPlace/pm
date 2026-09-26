@@ -1,23 +1,31 @@
-name: C/C++ CI
+name: Backend CI
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - uses: actions/checkout@v5
+
+      - name: Install Qt 6 build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes cmake g++ ninja-build qt6-base-dev qt6-httpserver-dev qt6-websockets-dev
+
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DENABLE_WARNINGS_AS_ERRORS=ON
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
