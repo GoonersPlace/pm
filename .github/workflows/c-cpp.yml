@@ -33,7 +33,7 @@ jobs:
         run: |
           while IFS= read -r line; do
             echo "::error file=CMakeLists.txt::$line"
-          done < /tmp/cmake-configure.log
+          done < <(tail -n 10 /tmp/cmake-configure.log)
 
       - name: Build
         run: cmake --build build --parallel
